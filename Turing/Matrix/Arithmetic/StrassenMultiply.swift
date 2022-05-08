@@ -34,15 +34,6 @@ extension Matrix {
         }
 
         return aPrepared.strassenRecursive(by: bPrepared)
-
-        //        var result = Matrix.zero((y: lhs.dimY, x: rhs.dimX))
-        //        for i in lhs.rowsRange {
-        //            for j in rhs.columnsRange {
-        //                result[i, j] = resultPrepared[i, j]
-        //            }
-        //        }
-        //
-        //        return result
     }
 
     /// Helper function for Strassen multiplication
@@ -84,13 +75,13 @@ extension Matrix {
         }
 
         // swiftlint:disable identifier_name
-        let p1 = a.strassenRecursive(by: f - h)       // a * (f - h)
-        let p2 = (a+b).strassenRecursive(by: h)     // (a + b) * h
-        let p3 = (c+d).strassenRecursive(by: e)     // (c + d) * e
-        let p4 = d.strassenRecursive(by: g - e)       // d * (g - e)
-        let p5 = (a+d).strassenRecursive(by: e + h)   // (a + d) * (e + h)
-        let p6 = (b-d).strassenRecursive(by: g + h)   // (b - d) * (g + h)
-        let p7 = (a-c).strassenRecursive(by: e + f)   // (a - c) * (e + f)
+        let p1 = a.strassenRecursive(by: f - h)         // a * (f - h)
+        let p2 = (a + b).strassenRecursive(by: h)       // (a + b) * h
+        let p3 = (c + d).strassenRecursive(by: e)       // (c + d) * e
+        let p4 = d.strassenRecursive(by: g - e)         // d * (g - e)
+        let p5 = (a + d).strassenRecursive(by: e + h)   // (a + d) * (e + h)
+        let p6 = (b - d).strassenRecursive(by: g + h)   // (b - d) * (g + h)
+        let p7 = (a - c).strassenRecursive(by: e + f)   // (a - c) * (e + f)
         // swiftlint:enable identifier_name
 
         let c11 = p5 + p4 - p2 + p6 // p5 + p4 - p2 + p6

@@ -16,7 +16,8 @@ public extension Array where Element: INumber {
     ///   - rhs: Second array
     /// - Returns: Array which elements are equal to sum of corresponding elements from first and second arrays
     static func ++ (lhs: Self, rhs: Self) -> Self {
-        assert(lhs.count == rhs.count, "Addition is defined for arrays of the same length")
+        assert(lhs.count == rhs.count,
+               MatrixError.wrongShape.localizedDescription)
 
         return lhs.indices.map {
             lhs[$0] + rhs[$0]
@@ -29,7 +30,8 @@ public extension Array where Element: INumber {
     ///   - rhs: Second array
     /// - Returns: Array which elements are equal to difference of corresponding elements from first and second arrays
     static func -- (lhs: Self, rhs: Self) -> Self {
-        assert(lhs.count == rhs.count, "Addition is defined for arrays of the same length")
+        assert(lhs.count == rhs.count,
+               MatrixError.wrongShape.localizedDescription)
 
         return lhs.indices.map {
             lhs[$0] - rhs[$0]
@@ -40,7 +42,8 @@ public extension Array where Element: INumber {
     /// - Parameter other: Array to find dot product with
     /// - Returns: Sum of products of corresponding elements' pairs
     func dot(_ other: [Element]) -> Element {
-        assert(count == other.count, "Dot product is defined for arrays of the same length")
+        assert(count == other.count,
+               MatrixError.wrongShape.localizedDescription)
 
         return indices.map {
             self[$0] * other[$0]

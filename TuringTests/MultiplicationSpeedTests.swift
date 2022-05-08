@@ -33,25 +33,25 @@ class MultiplicationSpeedTests: XCTestCase {
         let arr1 = [Int].random(dim * dim)
         let arr2 = [Int].random(dim * dim)
 
-        await Timer.measure("Strassen Async") {
-            let m1 = Matrix(flat: arr1, shape: (y: dim, x: dim))
-            let m2 = Matrix(flat: arr2, shape: (y: dim, x: dim))
-
-            await _ = Matrix.strassenMultiply(lhs: m1, rhs: m2)
-        }
-
-        await Timer.measure("Strassen Sync") {
-            let m1 = Matrix(flat: arr1, shape: (y: dim, x: dim))
-            let m2 = Matrix(flat: arr2, shape: (y: dim, x: dim))
-
-            _ = Matrix.strassenMultiplySync(lhs: m1, rhs: m2)
-        }
-
-        await Timer.measure("Stupid") {
-            let m1 = Matrix(flat: arr1, shape: (y: dim, x: dim))
-            let m2 = Matrix(flat: arr2, shape: (y: dim, x: dim))
-
-            _ = m1 * m2
-        }
+//        await Timer.measure("Strassen Async") {
+//            let m1 = Matrix(flat: arr1, shape: (y: dim, x: dim))
+//            let m2 = Matrix(flat: arr2, shape: (y: dim, x: dim))
+//
+//            await _ = Matrix.strassenMultiply(lhs: m1, rhs: m2)
+//        }
+//
+//        await Timer.measure("Strassen Sync") {
+//            let m1 = Matrix(flat: arr1, shape: (y: dim, x: dim))
+//            let m2 = Matrix(flat: arr2, shape: (y: dim, x: dim))
+//
+//            _ = Matrix.strassenMultiplySync(lhs: m1, rhs: m2)
+//        }
+//
+//        await Timer.measure("Stupid") {
+//            let m1 = Matrix(flat: arr1, shape: (y: dim, x: dim))
+//            let m2 = Matrix(flat: arr2, shape: (y: dim, x: dim))
+//
+//            _ = m1 * m2
+//        }
     }
 }

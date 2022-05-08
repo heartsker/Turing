@@ -9,7 +9,6 @@
 public struct Matrix<T: INumber> {
 
     // MARK: - Types
-
     /// Index in row or column
     public typealias FlatIndex = Int
 
@@ -64,11 +63,13 @@ public struct Matrix<T: INumber> {
     // MARK: - Subscripting
     subscript(i: FlatIndex, j: FlatIndex) -> T {
         get {
-            assert(isValid(index: Index(i, j)), "Index out of range")
+            assert(isValid(index: Index(i, j)),
+                   MatrixError.indexOutOfRange.localizedDescription)
             return matrix[flattened(index: Index(i, j))]
         }
         set {
-            assert(isValid(index: Index(i, j)), "Index out of range")
+            assert(isValid(index: Index(i, j)),
+                   MatrixError.indexOutOfRange.localizedDescription)
             matrix[flattened(index: Index(i, j))] = newValue
         }
     }
@@ -77,11 +78,13 @@ public struct Matrix<T: INumber> {
         get {
             switch direction {
             case .row:
-                assert(isValid(index: (number, 0)), "Index out of range")
+                assert(isValid(index: (number, 0)),
+                       MatrixError.indexOutOfRange.localizedDescription)
                 return Array(matrix[flattened(index: (y: number, x: 0)) ..< flattened(index: (y: number, x: dimX))])
 
             case .column:
-                assert(isValid(index: (number, 0)), "Index out of range")
+                assert(isValid(index: (number, 0)),
+                       MatrixError.indexOutOfRange.localizedDescription)
                 return (0 ..< dimY).map { row -> T in
                     matrix[flattened(index: (y: row, x: number))]
                 }
@@ -90,13 +93,15 @@ public struct Matrix<T: INumber> {
         set {
             switch direction {
             case .row:
-              assert(newValue.count == dimX)
+              assert(newValue.count == dimX,
+                     MatrixError.wrongShape.localizedDescription)
               for (column, element) in newValue.enumerated() {
                 matrix[flattened(index: (y: number, x: column))] = element
               }
 
             case .column:
-              assert(newValue.count == dimY)
+                assert(newValue.count == dimY,
+                       MatrixError.wrongShape.localizedDescription)
               for (row, element) in newValue.enumerated() {
                 matrix[flattened(index: (y: row, x: number))] = element
               }
@@ -124,10 +129,6 @@ public struct Matrix<T: INumber> {
 
     private func isValid(flatIndex idx: FlatIndex) -> Bool {
         0 <= idx && idx < count
-    }
-
-    private func flattened(index idx: Index) -> Int {
-        idx.y * dimX + idx.x
     }
 }
 
