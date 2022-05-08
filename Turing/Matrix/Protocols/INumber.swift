@@ -5,24 +5,7 @@
 //  Created by Daniel Pustotin on 07.05.2022.
 //
 
-/// A type with values that support multiplication
-public protocol IMultiplicative {
-    /// Multiplication
-    /// - Parameters:
-    ///   - lhs: First argument
-    ///   - rhs: Second argument
-    /// - Returns: Result of multiplication
-    static func * (lhs: Self, rhs: Self) -> Self
-
-    /// Such value that
-    /// `x` * `one` == `x`
-    /// and
-    /// `one` * `x` == `x`
-    /// for any `x`
-    static var one: Self { get }
-}
-
-public protocol INumber: AdditiveArithmetic, IMultiplicative {
+public protocol INumber: AdditiveArithmetic, IMultipliable {
 
     init(_ int: Int)
 

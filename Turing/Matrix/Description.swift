@@ -11,7 +11,7 @@ extension Matrix: CustomStringConvertible {
         for i in columnsRange {
             str += "⎟"
             for j in rowsRange {
-                str += "\t" + String(describing: self[i, j] ?? T.zero)
+                str += "\t" + String(describing: self[i, j])
             }
             str += "\t⎟" + "\n"
         }

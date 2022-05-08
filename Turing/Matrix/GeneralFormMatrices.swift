@@ -7,13 +7,15 @@
 
 extension Matrix {
     static func zero(_ dim: Int) -> Self {
-        Self(Array(repeating: Array(repeating: T.zero,
-                                      count: dim),
-                     count: dim))
+        Self(flat: Array(repeating: T.zero, count: dim * dim), shape: (y: dim, x: dim))
+    }
+
+    static func zero(_ shape: Index) -> Self {
+        Self(flat: Array(repeating: T.zero, count: shape.y * shape.x), shape: shape)
     }
 
     static func identity(_ dim: Int) -> Self {
-        let matrix = Self(Array(repeating: Array(repeating: T.zero, count: dim), count: dim))
+        var matrix = Self(Array(repeating: Array(repeating: T.zero, count: dim), count: dim))
         for i in 0 ... dim {
             matrix[i, i] = T.one
         }

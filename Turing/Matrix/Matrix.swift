@@ -6,7 +6,7 @@
 //
 
 /// Matrix
-public final class Matrix<T: INumber> {
+public struct Matrix<T: INumber> {
 
     // MARK: - Types
 
@@ -15,6 +15,14 @@ public final class Matrix<T: INumber> {
 
     /// Index of the element in `y` row and `x` column
     public typealias Index = (y: FlatIndex, x: FlatIndex)
+
+    /// Direction of the array slice
+    public enum Slice {
+        /// Row slice
+        case row
+        /// Column slice
+        case column
+    }
 
     // MARK: - Public properties
     /// Number of rows
@@ -54,17 +62,58 @@ public final class Matrix<T: INumber> {
     }
 
     // MARK: - Subscripting
-    subscript(i: FlatIndex, j: FlatIndex) -> T? {
+    subscript(i: FlatIndex, j: FlatIndex) -> T {
         get {
-            isValid(index: Index(i, j)) ? matrix[flattened(index: Index(i, j))] : nil
+            assert(isValid(index: Index(i, j)), "Index out of range")
+            return matrix[flattened(index: Index(i, j))]
         }
         set {
-            if isValid(index: Index(i, j)) {
-                if let value = newValue {
-                    matrix[flattened(index: Index(i, j))] = value
+            assert(isValid(index: Index(i, j)), "Index out of range")
+            matrix[flattened(index: Index(i, j))] = newValue
+        }
+    }
+
+    subscript(_ direction: Slice, number: FlatIndex) -> [T] {
+        get {
+            switch direction {
+            case .row:
+                assert(isValid(index: (number, 0)), "Index out of range")
+                return Array(matrix[flattened(index: (y: number, x: 0)) ..< flattened(index: (y: number, x: dimX))])
+
+            case .column:
+                assert(isValid(index: (number, 0)), "Index out of range")
+                return (0 ..< dimY).map { row -> T in
+                    matrix[flattened(index: (y: row, x: number))]
                 }
             }
         }
+        set {
+            switch direction {
+            case .row:
+              assert(newValue.count == dimX)
+              for (column, element) in newValue.enumerated() {
+                matrix[flattened(index: (y: number, x: column))] = element
+              }
+
+            case .column:
+              assert(newValue.count == dimY)
+              for (row, element) in newValue.enumerated() {
+                matrix[flattened(index: (y: row, x: number))] = element
+              }
+            }
+        }
+    }
+
+    // MARK: - Public methods
+
+    /// Applies closure to every element in the matrix
+    /// - Parameter completion: Closure to apply
+    public func forEach(_ completion: (Index) throws -> Void) rethrows {
+      for row in rowsRange {
+        for column in columnsRange {
+            try completion((y: row, x: column))
+        }
+      }
     }
 
     // MARK: - Private methods
