@@ -11,19 +11,10 @@ import XCTest
 class SpeedTests: XCTestCase {
 
     func testSpeed() async throws {
-        Timer.repeates = 10000
+        Timer.repeates = 1000
 
-        await Timer.measure("Class Matrix") {
+        await Timer.measure("") {
 
-        }
-
-        let dim = 10
-        let shape = (y: dim, x: dim)
-        var m = Matrix<Int>.random(shape)
-
-        await Timer.measure("Class Matrix") {
-            m.transpose()
         }
     }
-
 }

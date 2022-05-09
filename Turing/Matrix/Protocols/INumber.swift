@@ -38,6 +38,21 @@ extension INumber {
     public static var one: Self {
         Self(1)
     }
+
+    /// Such value that
+    /// `one` + `negativeOne` == `zero`
+    /// and
+    /// `negativeOne` + `one` == `zero`
+    public static var negativeOne: Self {
+        Self(-1)
+    }
+
+    /// Unary minus operator
+    /// - Parameter number: Number to negate
+    /// - Returns: Negated number
+    public static prefix func - (number: Self) -> Self {
+        number * negativeOne
+    }
 }
 
 extension Int: INumber {}

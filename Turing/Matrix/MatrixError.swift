@@ -5,11 +5,11 @@
 //  Created by Daniel Pustotin on 08.05.2022.
 //
 
-enum MatrixError: Error {
+public enum MatrixError: LocalizedError {
     case wrongShape
     case indexOutOfRange
 
-    var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .wrongShape:
             return "Wrong shape"

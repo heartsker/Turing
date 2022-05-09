@@ -5,7 +5,7 @@
 //  Created by Daniel Pustotin on 08.05.2022.
 //
 
-extension Matrix {
+internal extension Matrix {
     func flattened(index: Index) -> FlatIndex {
         index.y * dimX + index.x
     }

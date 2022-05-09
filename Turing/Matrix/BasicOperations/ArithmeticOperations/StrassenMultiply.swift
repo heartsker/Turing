@@ -25,12 +25,12 @@ extension Matrix {
         var aPrepared = Matrix.zero(dim)
         var bPrepared = Matrix.zero(dim)
 
-        rhs.forEach { (i, j) in
-            aPrepared[i, j] = rhs[i, j]
+        rhs.forEach { (y, x) in
+            aPrepared[y, x] = rhs[y, x]
         }
 
-        rhs.forEach { (i, j) in
-            bPrepared[i, j] = rhs[i, j]
+        rhs.forEach { (y, x) in
+            bPrepared[y, x] = rhs[y, x]
         }
 
         return aPrepared.strassenRecursive(by: bPrepared)
@@ -61,16 +61,16 @@ extension Matrix {
         var h = Matrix.zero(halfDim)
         // swiftlint:enable identifier_name
 
-        for i in 0 ..< halfDim {
-            for j in 0 ..< halfDim {
-                a[i, j] = self[i, j]
-                b[i, j] = self[i, j+halfDim]
-                c[i, j] = self[i + halfDim, j]
-                d[i, j] = self[i + halfDim, j + halfDim]
-                e[i, j] = other[i, j]
-                f[i, j] = other[i, j + halfDim]
-                g[i, j] = other[i + halfDim, j]
-                h[i, j] = other[i + halfDim, j + halfDim]
+        for y in 0 ..< halfDim {
+            for x in 0 ..< halfDim {
+                a[y, x] = self[y, x]
+                b[y, x] = self[y, x+halfDim]
+                c[y, x] = self[y + halfDim, x]
+                d[y, x] = self[y + halfDim, x + halfDim]
+                e[y, x] = other[y, x]
+                f[y, x] = other[y, x + halfDim]
+                g[y, x] = other[y + halfDim, x]
+                h[y, x] = other[y + halfDim, x + halfDim]
             }
         }
 
@@ -90,12 +90,12 @@ extension Matrix {
         let c22 = p1 + p5 - p3 - p7 // p1 + p5 - p3 - p7
 
         var result = Matrix.zero(dimY)
-        for i in 0 ..< halfDim {
-            for j in 0 ..< halfDim {
-                result[i, j] = c11[i, j]
-                result[i, j + halfDim] = c12[i, j]
-                result[i + halfDim, j] = c21[i, j]
-                result[i + halfDim, j + halfDim] = c22[i, j]
+        for y in 0 ..< halfDim {
+            for x in 0 ..< halfDim {
+                result[y, x] = c11[y, x]
+                result[y, x + halfDim] = c12[y, x]
+                result[y + halfDim, x] = c21[y, x]
+                result[y + halfDim, x + halfDim] = c22[y, x]
             }
         }
         return result

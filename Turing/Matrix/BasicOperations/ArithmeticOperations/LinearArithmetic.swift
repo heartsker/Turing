@@ -1,15 +1,15 @@
 //
-//  ScalarArithmetic.swift
+//  LinearArithmetic.swift
 //  Turing
 //
 //  Created by Daniel Pustotin on 08.05.2022.
 //
 
-extension Matrix: IScalarArithmetic {
+extension Matrix: ILinearArithmetic {
 
     // MARK: - Addition
     public func add(_ other: T) -> Matrix {
-        Matrix(flat: matrix.map({ $0 + other }), shape: shape)
+        Matrix(matrix.map({ $0 + other }), shape: shape)
     }
 
     public static func add(_ lhs: Matrix, to rhs: T) -> Matrix {
@@ -30,7 +30,7 @@ extension Matrix: IScalarArithmetic {
 
     // MARK: - Subtracting
     public func subtract(_ other: T) -> Matrix {
-        Matrix(flat: matrix.map({ $0 - other }), shape: shape)
+        Matrix(matrix.map({ $0 - other }), shape: shape)
     }
 
     public static func subtract(_ lhs: Matrix, _ rhs: T) -> Matrix {
@@ -51,7 +51,7 @@ extension Matrix: IScalarArithmetic {
 
     // MARK: - Multiplication
     public func multiply(_ other: T) -> Matrix {
-        Matrix(flat: matrix.map({ $0 * other }), shape: shape)
+        Matrix(matrix.map({ $0 * other }), shape: shape)
     }
 
     public static func multiply(_ lhs: Matrix, by rhs: T) -> Matrix {
@@ -72,7 +72,7 @@ extension Matrix: IScalarArithmetic {
 
     // MARK: - Division
     public func divide(_ other: T) -> Matrix {
-        Matrix(flat: matrix.map({ $0 / other }), shape: shape)
+        Matrix(matrix.map({ $0 / other }), shape: shape)
     }
 
     public static func divide(_ lhs: Matrix, by rhs: T) -> Matrix {
@@ -89,5 +89,10 @@ extension Matrix: IScalarArithmetic {
 
     public static func / (lhs: T, rhs: Matrix) -> Matrix {
         rhs.divide(lhs)
+    }
+
+    // MARK: - Unary minus
+    public static prefix func - (matrix: Matrix<T>) -> Matrix<T> {
+        matrix * T.negativeOne
     }
 }

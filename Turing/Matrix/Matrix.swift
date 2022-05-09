@@ -40,100 +40,88 @@ public struct Matrix<T: INumber> {
     internal var count: FlatIndex {
         dimY * dimX
     }
-    internal var columnsRange: Range<FlatIndex> {
+    internal var rowsRange: Range<FlatIndex> {
         0 ..< dimY
     }
-    internal var rowsRange: Range<FlatIndex> {
+    internal var columnsRange: Range<FlatIndex> {
         0 ..< dimX
     }
 
     // MARK: - Initialization
-    init(_ matrix: Array2D<T>) {
+    /// Initializes matrix from two-dimensional array
+    /// - Parameter matrix: 2D array to form the matrix
+    public init(_ matrix: Array2D<T>) {
         self.matrix = Array(matrix.joined())
         dimY = matrix.count
         dimX = matrix.isEmpty ? 0 : matrix[0].count
     }
 
-    init(flat matrix: [T], shape: Index) {
+    /// Initializes matrix from flat array
+    /// - Parameters:
+    ///   - matrix: Flat array to form the matrix
+    ///   - shape: Shape of the matrix
+    public init(_ matrix: [T], shape: Index) {
+        assert(shape.x * shape.y == matrix.count && (shape == (y: 0, x: 0)) == matrix.isEmpty,
+               MatrixError.wrongShape.localizedDescription)
         self.matrix = matrix
         dimY = shape.y
         dimX = shape.x
     }
 
     // MARK: - Subscripting
-    subscript(i: FlatIndex, j: FlatIndex) -> T {
+    /// Subscripting
+    /// - Parameter y: Row index
+    /// - Parameter x: Column index
+    /// - Returns: Element at index `[y, x]`
+    public subscript(y: FlatIndex, x: FlatIndex) -> T {
         get {
-            assert(isValid(index: Index(i, j)),
-                   MatrixError.indexOutOfRange.localizedDescription)
-            return matrix[flattened(index: Index(i, j))]
+            assert(isValid(index: Index(y, x)), MatrixError.indexOutOfRange.localizedDescription)
+            return matrix[flattened(index: Index(y, x))]
         }
         set {
-            assert(isValid(index: Index(i, j)),
-                   MatrixError.indexOutOfRange.localizedDescription)
-            matrix[flattened(index: Index(i, j))] = newValue
+            assert(isValid(index: Index(y, x)), MatrixError.indexOutOfRange.localizedDescription)
+            matrix[flattened(index: Index(y, x))] = newValue
         }
     }
 
-    subscript(_ direction: Slice, number: FlatIndex) -> [T] {
+    /// Subscripting
+    /// - Parameter slice: `row` or `column`
+    /// - Parameter index: Slice index
+    /// - Returns: Slice at index `index`
+    public subscript(_ slice: Slice, _ index: FlatIndex) -> [T] {
         get {
-            switch direction {
+
+            assert(isValid(slice, index: index), MatrixError.indexOutOfRange.localizedDescription)
+            switch slice {
             case .row:
-                assert(isValid(index: (number, 0)),
-                       MatrixError.indexOutOfRange.localizedDescription)
-                return Array(matrix[flattened(index: (y: number, x: 0)) ..< flattened(index: (y: number, x: dimX))])
+                return Array(matrix[flattened(index: (y: index, x: 0)) ..< flattened(index: (y: index, x: dimX))])
 
             case .column:
-                assert(isValid(index: (number, 0)),
-                       MatrixError.indexOutOfRange.localizedDescription)
                 return (0 ..< dimY).map { row -> T in
-                    matrix[flattened(index: (y: row, x: number))]
+                    matrix[flattened(index: (y: row, x: index))]
                 }
             }
         }
         set {
-            switch direction {
+            switch slice {
             case .row:
-              assert(newValue.count == dimX,
-                     MatrixError.wrongShape.localizedDescription)
-              for (column, element) in newValue.enumerated() {
-                matrix[flattened(index: (y: number, x: column))] = element
-              }
+                assert(newValue.count == dimX, MatrixError.wrongShape.localizedDescription)
+                for (column, element) in newValue.enumerated() {
+                    matrix[flattened(index: (y: index, x: column))] = element
+                }
 
             case .column:
-                assert(newValue.count == dimY,
-                       MatrixError.wrongShape.localizedDescription)
-              for (row, element) in newValue.enumerated() {
-                matrix[flattened(index: (y: row, x: number))] = element
-              }
+                assert(newValue.count == dimY, MatrixError.wrongShape.localizedDescription)
+                for (row, element) in newValue.enumerated() {
+                    matrix[flattened(index: (y: row, x: index))] = element
+                }
             }
         }
-    }
-
-    // MARK: - Public methods
-
-    /// Applies closure to every element in the matrix
-    /// - Parameter completion: Closure to apply
-    public func forEach(_ completion: (Index) throws -> Void) rethrows {
-      for row in rowsRange {
-        for column in columnsRange {
-            try completion((y: row, x: column))
-        }
-      }
     }
 
     // MARK: - Private methods
     private func isValid(index idx: Index) -> Bool {
         0 <= idx.y && idx.y < dimY &&
         0 <= idx.x && idx.x < dimX
-    }
-
-    private func isValid(flatIndex idx: FlatIndex) -> Bool {
-        0 <= idx && idx < count
-    }
-}
-
-extension Matrix: Equatable {
-    public static func == (lhs: Matrix, rhs: Matrix) -> Bool {
-        lhs.matrix == rhs.matrix
     }
 }

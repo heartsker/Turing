@@ -7,12 +7,6 @@
 
 /// A type with values that support multiplication
 public protocol IMultipliable {
-    /// Multiplication
-    /// - Parameters:
-    ///   - lhs: First argument
-    ///   - rhs: Second argument
-    /// - Returns: Result of multiplication
-    static func * (lhs: Self, rhs: Self) -> Self
 
     /// Such value that
     /// `x` * `one` == `x`
@@ -20,4 +14,17 @@ public protocol IMultipliable {
     /// `one` * `x` == `x`
     /// for any `x`
     static var one: Self { get }
+
+    /// Multiplication
+    /// - Parameters:
+    ///   - lhs: First argument
+    ///   - rhs: Second argument
+    /// - Returns: Result of multiplication
+    static func * (lhs: Self, rhs: Self) -> Self
+
+    /// Multiplication
+    /// - Parameters:
+    ///   - lhs: First argument
+    ///   - rhs: Second argument
+    static func *= (lhs: inout Self, rhs: Self)
 }

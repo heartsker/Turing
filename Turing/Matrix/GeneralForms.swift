@@ -1,5 +1,5 @@
 //
-//  GeneralFormMatrices.swift
+//  GeneralForms.swift
 //  Turing
 //
 //  Created by Daniel Pustotin on 07.05.2022.
@@ -7,18 +7,23 @@
 
 public extension Matrix {
 
+    /// Empty matrix with shape `(y: 0, x: 0)`
+    static var empty: Matrix {
+        Matrix([T](), shape: (y: 0, x: 0))
+    }
+
     /// Square zero matrix
     /// - Parameter dim: Creates matrix with shape `(y: dim, x: dim)`
     /// - Returns: Square zero matrix
-    static func zero(_ dim: Int) -> Self {
-        Self(flat: Array(repeating: T.zero, count: dim * dim), shape: (y: dim, x: dim))
+    static func zero(_ dim: Int) -> Matrix {
+        Matrix(Array(repeating: T.zero, count: dim * dim), shape: (y: dim, x: dim))
     }
 
     /// Zero matrix
     /// - Parameter shape: Shape of the matrix
     /// - Returns: Zero matrix
-    static func zero(_ shape: Index) -> Self {
-        Self(flat: Array(repeating: T.zero, count: shape.y * shape.x), shape: shape)
+    static func zero(_ shape: Index) -> Matrix {
+        Matrix(Array(repeating: T.zero, count: shape.y * shape.x), shape: shape)
     }
 
     /// Identity matrix
@@ -30,10 +35,10 @@ public extension Matrix {
     /// | 0 0 ... 1 |
     /// - Parameter dim: Creates matrix with shape `(y: dim, x: dim)`
     /// - Returns: Identity matrix
-    static func identity(_ dim: Int) -> Self {
-        var matrix = Self.zero(dim)
-        for i in 0 ... dim {
-            matrix[i, i] = T.one
+    static func identity(_ dim: Int) -> Matrix {
+        var matrix = Matrix.zero(dim)
+        for y in 0 ... dim {
+            matrix[y, y] = T.one
         }
         return matrix
     }
@@ -43,10 +48,10 @@ public extension Matrix {
     ///   - fill: The value of every element
     ///   - shape: Shape of the matrix
     /// - Returns: Matrix filled with some value
-    static func filled(with fill: T, shape: Index) -> Self {
-        Self(Array(repeating: Array(repeating: fill,
-                                      count: shape.x),
-                     count: shape.y))
+    static func filled(with fill: T, shape: Index) -> Matrix {
+        Matrix(Array(repeating: Array(repeating: fill,
+                                    count: shape.x),
+                   count: shape.y))
     }
 
     /// Matrix with elements with some property
@@ -54,8 +59,8 @@ public extension Matrix {
     ///   - fill: Closure to define the element at `(y: dim, x: dim)`
     ///   - shape: Shape of the matrix
     /// - Returns: Matrix with elements with some property
-    static func filled(_ shape: Index, with fill: (Index) -> T) -> Self {
-        var result = Self.zero(shape)
+    static func filled(_ shape: Index, with fill: (Index) -> T) -> Matrix {
+        var result = Matrix.zero(shape)
         for y in result.columnsRange {
             for x in result.rowsRange {
                 result[y, x] = fill((y: y, x: x))

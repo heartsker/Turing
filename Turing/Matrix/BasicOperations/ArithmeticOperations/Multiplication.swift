@@ -6,18 +6,18 @@
 //
 
 extension Matrix: IMultipliable {
+
     public static var one: Matrix<T> {
         identity(0)
     }
 
     public func multiply(by other: Matrix) -> Matrix {
-        assert(isAcceptableShape(for: .multiplication, with: other),
-               MatrixError.wrongShape.localizedDescription)
+        assert(isAcceptableShape(for: .multiplication, with: other), MatrixError.wrongShape.localizedDescription)
         var result = Matrix.filled(with: T.zero, shape: (y: dimY, x: other.dimX))
         for y in 0 ..< result.dimY {
             for x in 0 ..< result.dimX {
-                for i in 0 ..< dimX {
-                    result[y, x] += self[y, i] * other[i, x]
+                for z in 0 ..< dimX {
+                    result[y, x] += self[y, z] * other[z, x]
                 }
             }
         }
@@ -30,5 +30,9 @@ extension Matrix: IMultipliable {
 
     public static func * (lhs: Matrix, rhs: Matrix) -> Matrix {
         lhs.multiply(by: rhs)
+    }
+
+    public static func *= (lhs: inout Matrix<T>, rhs: Matrix<T>) {
+        lhs = lhs.multiply(by: rhs)
     }
 }

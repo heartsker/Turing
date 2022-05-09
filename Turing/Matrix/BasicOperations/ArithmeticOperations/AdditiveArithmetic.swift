@@ -12,10 +12,9 @@ extension Matrix: AdditiveArithmetic {
 
     // MARK: - Addition
     public func add(_ other: Matrix) -> Matrix {
-        assert(isAcceptableShape(for: .addition, with: other),
-               MatrixError.wrongShape.localizedDescription)
+        assert(isAcceptableShape(for: .addition, with: other), MatrixError.wrongShape.localizedDescription)
 
-        return Matrix(flat: matrix ++ other.matrix, shape: shape)
+        return Matrix(matrix ++ other.matrix, shape: shape)
     }
 
     public static func add(_ lhs: Matrix, to rhs: Matrix) -> Matrix {
@@ -27,12 +26,10 @@ extension Matrix: AdditiveArithmetic {
     }
 
     // MARK: - Subtraction
-
     public func subtract(_ other: Matrix) -> Matrix {
-        assert(isAcceptableShape(for: .addition, with: other),
-               MatrixError.wrongShape.localizedDescription)
+        assert(isAcceptableShape(for: .addition, with: other), MatrixError.wrongShape.localizedDescription)
 
-        return Matrix(flat: matrix ++ other.matrix, shape: shape)
+        return Matrix(matrix ++ other.matrix, shape: shape)
     }
 
     public static func subtract(_ lhs: Matrix, _ rhs: Matrix) -> Matrix {
