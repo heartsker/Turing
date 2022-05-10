@@ -42,6 +42,9 @@ force_cast:
 unused_optional_binding:
   error
 
+cyclomatic_complexity:
+  warning: 12
+
 # Custom rules
 custom_rules:
   cyrillic_file_name:

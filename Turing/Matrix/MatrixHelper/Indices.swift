@@ -6,19 +6,19 @@
 //
 
 internal extension Matrix {
-    func flattened(index: Index) -> FlatIndex {
+    func flattened(_ index: Index) -> FlatIndex {
         index.y * dimX + index.x
     }
 
-    func expanded(index: FlatIndex) -> Index {
+    func expanded(_ index: FlatIndex) -> Index {
         (y: index / dimX, x: index % dimX)
     }
 
-    func isDiagonal(index: Index) -> Bool {
+    func isOnDiagonal(_ index: Index) -> Bool {
         index.y == index.x
     }
 
-    func isDiagonal(index: FlatIndex) -> Bool {
-        isDiagonal(index: expanded(index: index))
+    func isOnDiagonal(_ index: FlatIndex) -> Bool {
+        isOnDiagonal(expanded(index))
     }
 }

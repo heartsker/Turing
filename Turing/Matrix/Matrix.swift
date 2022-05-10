@@ -5,15 +5,18 @@
 //  Created by Daniel Pustotin on 07.05.2022.
 //
 
+// MARK: - Types
+/// Index in row or column
+public typealias FlatIndex = Int
+
+/// Index of the element in `y` row and `x` column
+public typealias Index = (y: FlatIndex, x: FlatIndex)
+
+/// Shape of the matrix with `y` rows and `x` columns
+public typealias Shape = (y: FlatIndex, x: FlatIndex)
+
 /// Matrix
 public struct Matrix<T: INumber> {
-
-    // MARK: - Types
-    /// Index in row or column
-    public typealias FlatIndex = Int
-
-    /// Index of the element in `y` row and `x` column
-    public typealias Index = (y: FlatIndex, x: FlatIndex)
 
     /// Direction of the array slice
     public enum Slice {
@@ -25,18 +28,37 @@ public struct Matrix<T: INumber> {
 
     // MARK: - Public properties
     /// Number of rows
-    public var dimY: FlatIndex
+    public var dimY: FlatIndex {
+        didSet {
+#if TIME_OPTIMIZED
+            changedShape()
+#endif
+        }
+    }
 
     /// Number of columns
-    public var dimX: FlatIndex
+    public var dimX: FlatIndex {
+        didSet {
+#if TIME_OPTIMIZED
+            changedShape()
+#endif
+        }
+    }
 
     /// Shape of matrix `(rows, columns)`
-    public var shape: Index {
+    public var shape: Shape {
         (y: dimY, x: dimX)
     }
 
     // MARK: - Internal properties
-    internal var matrix: [T]
+    internal var matrix: [T] {
+        didSet {
+#if TIME_OPTIMIZED
+            changedContents()
+#endif
+        }
+
+    }
     internal var count: FlatIndex {
         dimY * dimX
     }
@@ -46,6 +68,10 @@ public struct Matrix<T: INumber> {
     internal var columnsRange: Range<FlatIndex> {
         0 ..< dimX
     }
+#if TIME_OPTIMIZED
+    internal var isUpdateNeeded: [MatrixType: Bool] = [:]
+    internal var savedTypes: [MatrixType: Bool] = [:]
+#endif
 
     // MARK: - Initialization
     /// Initializes matrix from two-dimensional array
@@ -60,9 +86,9 @@ public struct Matrix<T: INumber> {
     /// - Parameters:
     ///   - matrix: Flat array to form the matrix
     ///   - shape: Shape of the matrix
-    public init(_ matrix: [T], shape: Index) {
+    public init(_ matrix: [T], shape: Shape) {
         assert(shape.x * shape.y == matrix.count && (shape == (y: 0, x: 0)) == matrix.isEmpty,
-               MatrixError.wrongShape.localizedDescription)
+               MatrixError.invalidShape.localizedDescription)
         self.matrix = matrix
         dimY = shape.y
         dimX = shape.x
@@ -76,11 +102,12 @@ public struct Matrix<T: INumber> {
     public subscript(y: FlatIndex, x: FlatIndex) -> T {
         get {
             assert(isValid(index: Index(y, x)), MatrixError.indexOutOfRange.localizedDescription)
-            return matrix[flattened(index: Index(y, x))]
+            return matrix[flattened(Index(y, x))]
         }
         set {
             assert(isValid(index: Index(y, x)), MatrixError.indexOutOfRange.localizedDescription)
-            matrix[flattened(index: Index(y, x))] = newValue
+            matrix[flattened(Index(y, x))] = newValue
+
         }
     }
 
@@ -90,34 +117,55 @@ public struct Matrix<T: INumber> {
     /// - Returns: Slice at index `index`
     public subscript(_ slice: Slice, _ index: FlatIndex) -> [T] {
         get {
-
             assert(isValid(slice, index: index), MatrixError.indexOutOfRange.localizedDescription)
             switch slice {
             case .row:
-                return Array(matrix[flattened(index: (y: index, x: 0)) ..< flattened(index: (y: index, x: dimX))])
+                return Array(matrix[flattened((y: index, x: 0)) ..< flattened((y: index, x: dimX))])
 
             case .column:
                 return (0 ..< dimY).map { row -> T in
-                    matrix[flattened(index: (y: row, x: index))]
+                    matrix[flattened((y: row, x: index))]
                 }
             }
         }
         set {
             switch slice {
             case .row:
-                assert(newValue.count == dimX, MatrixError.wrongShape.localizedDescription)
+                assert(newValue.count == dimX, MatrixError.invalidShape.localizedDescription)
                 for (column, element) in newValue.enumerated() {
-                    matrix[flattened(index: (y: index, x: column))] = element
+                    matrix[flattened((y: index, x: column))] = element
                 }
 
             case .column:
-                assert(newValue.count == dimY, MatrixError.wrongShape.localizedDescription)
+                assert(newValue.count == dimY, MatrixError.invalidShape.localizedDescription)
                 for (row, element) in newValue.enumerated() {
-                    matrix[flattened(index: (y: row, x: index))] = element
+                    matrix[flattened((y: row, x: index))] = element
                 }
             }
         }
     }
+
+    // MARK: - TIME_OPTIMIZED methods
+#if TIME_OPTIMIZED
+    internal mutating func changedShape() {
+        MatrixType.shapeDependent.forEach {
+            isUpdateNeeded[$0] = true
+        }
+        changedShapeContents()
+    }
+    internal mutating func changedContents() {
+        MatrixType.contentsDependent.forEach {
+            isUpdateNeeded[$0] = true
+        }
+        changedShapeContents()
+    }
+
+    private mutating func changedShapeContents() {
+        MatrixType.shapeContentsDependent.forEach {
+            isUpdateNeeded[$0] = true
+        }
+    }
+#endif
 
     // MARK: - Private methods
     private func isValid(index idx: Index) -> Bool {

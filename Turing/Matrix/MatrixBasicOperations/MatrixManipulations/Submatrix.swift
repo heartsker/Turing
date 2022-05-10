@@ -17,8 +17,8 @@ public extension Matrix {
                                       columns: Set(columnsRange).subtracting(columns))
         }
         let content = matrix.indices.filter { idx in
-            !rows.contains(expanded(index: idx).y) &&
-            !columns.contains(expanded(index: idx).x)
+            !rows.contains(expanded(idx).y) &&
+            !columns.contains(expanded(idx).x)
         }.map { idx in
             matrix[idx]
         }
@@ -36,8 +36,8 @@ public extension Matrix {
                                       columns: Set(columnsRange).subtracting(columns))
         }
         let content = matrix.indices.filter { idx in
-            rows.contains(expanded(index: idx).y) ||
-            columns.contains(expanded(index: idx).x)
+            rows.contains(expanded(idx).y) ||
+            columns.contains(expanded(idx).x)
         }.map { idx in
             matrix[idx]
         }

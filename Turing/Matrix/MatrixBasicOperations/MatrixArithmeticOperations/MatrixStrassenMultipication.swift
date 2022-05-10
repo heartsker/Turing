@@ -1,11 +1,11 @@
 //
-//  FastMultiplication.swift
+//  MatrixStrassenMultipication.swift
 //  Turing
 //
 //  Created by Daniel Pustotin on 07.05.2022.
 //
 
-extension Matrix {
+public extension Matrix {
 
     /// Multiplication of two matrices usin Strassen algorithm
     /// - Parameters:
@@ -14,7 +14,7 @@ extension Matrix {
     /// - Returns: Result of multiplication
     /// - Note: [Strassen Algorithm](https://en.wikipedia.org/wiki/Strassen_algorithm)
     /// - Complexity: `O(n^log 7)` ~= `O(n^2.8074)`
-    public static func strassenMultiply(lhs: Matrix, rhs: Matrix) -> Matrix {
+    static func strassenMultiply(lhs: Matrix, rhs: Matrix) -> Matrix {
 
         func nextPowerOfTwo(after number: Int) -> Int {
             Int(pow(2, ceil(log2(Double(number)))))

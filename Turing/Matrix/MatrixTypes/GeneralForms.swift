@@ -22,11 +22,11 @@ public extension Matrix {
     /// Zero matrix
     /// - Parameter shape: Shape of the matrix
     /// - Returns: Zero matrix
-    static func zero(_ shape: Index) -> Matrix {
+    static func zero(_ shape: Shape) -> Matrix {
         Matrix(Array(repeating: T.zero, count: shape.y * shape.x), shape: shape)
     }
 
-    /// Identity matrix
+    /// Identical matrix
     /// - Note:
     /// The identity matrix looks like
     /// | 1 0 ... 0 |
@@ -34,8 +34,8 @@ public extension Matrix {
     /// :       ...    :
     /// | 0 0 ... 1 |
     /// - Parameter dim: Creates matrix with shape `(y: dim, x: dim)`
-    /// - Returns: Identity matrix
-    static func identity(_ dim: Int) -> Matrix {
+    /// - Returns: Identical matrix
+    static func identical(_ dim: Int) -> Matrix {
         var matrix = Matrix.zero(dim)
         for y in 0 ... dim {
             matrix[y, y] = T.one
@@ -48,10 +48,10 @@ public extension Matrix {
     ///   - fill: The value of every element
     ///   - shape: Shape of the matrix
     /// - Returns: Matrix filled with some value
-    static func filled(with fill: T, shape: Index) -> Matrix {
+    static func filled(with fill: T, shape: Shape) -> Matrix {
         Matrix(Array(repeating: Array(repeating: fill,
                                     count: shape.x),
-                   count: shape.y))
+                     count: shape.y))
     }
 
     /// Matrix with elements with some property
@@ -59,7 +59,7 @@ public extension Matrix {
     ///   - fill: Closure to define the element at `(y: dim, x: dim)`
     ///   - shape: Shape of the matrix
     /// - Returns: Matrix with elements with some property
-    static func filled(_ shape: Index, with fill: (Index) -> T) -> Matrix {
+    static func filled(_ shape: Shape, with fill: (Index) -> T) -> Matrix {
         var result = Matrix.zero(shape)
         for y in result.columnsRange {
             for x in result.rowsRange {
@@ -72,7 +72,7 @@ public extension Matrix {
     /// Random filled matrix
     /// - Parameter shape: Shape of the matrix
     /// - Returns: Random filled matrix
-    static func random(_ shape: Index) -> Matrix<Int> {
+    static func random(_ shape: Shape) -> Matrix<Int> {
         var result = Matrix<Int>.zero(shape)
         for y in result.columnsRange {
             for x in result.rowsRange {
